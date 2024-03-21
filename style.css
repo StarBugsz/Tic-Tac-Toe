@@ -1,0 +1,55 @@
+body {
+  padding: 0px;
+  margin: 0px;
+}
+
+.background {
+  width: 100vw;
+  height: 100vh;
+  background-image: url("darkbackground.jpg");
+  opacity: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#spielfeld {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  
+}
+
+#spielfeld:hover {
+  cursor: pointer;
+}
+
+.feld {
+  width: 100px;
+  height: 100px;
+  background-color: rgba(19, 32, 214, 0.747);
+  border: 2px solid rgba(182, 182, 182, 0.76);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bx{
+  color: rgb(0, 0, 0);
+  font-size: 90px;
+}
+
+.player1{
+  height:20px;
+  border-radius: 2px;
+  background-color: blueviolet;
+  color: #ffffff;
+  border: 3.5px solid rgb(59, 58, 58);
+}
+
+.player2{
+  height:20px;
+  color: #ffffff;
+
+}
