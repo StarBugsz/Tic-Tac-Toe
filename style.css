@@ -3,6 +3,16 @@ body {
   margin: 0px;
 }
 
+button {
+  background-color: blue;
+  border-radius: 5px;
+  border: 3.5px solid rgb(59, 58, 58);
+}
+
+button:hover {
+  cursor:pointer;
+}
+
 .background {
   width: 100vw;
   height: 100vh;
@@ -41,15 +51,40 @@ body {
 }
 
 .player1{
+  display:flex;
+  justify-content: center;
   height:20px;
   border-radius: 2px;
   background-color: blueviolet;
   color: #ffffff;
   border: 3.5px solid rgb(59, 58, 58);
+  width:48%;
 }
 
 .player2{
+  display: flex;
+  justify-content: center;
   height:20px;
   color: #ffffff;
+  width:48%;
+}
 
+.bot_button{
+  color: white;
+  width: 50%;
+}
+
+.player_button{
+  color:white;
+  width:50%;
+}
+
+.player{
+  display: flex;
+  flex-wrap: wrap;
+  width:310px;
+}
+
+.clicked{
+  background-color: aqua;
 }

@@ -1,10 +1,13 @@
-"use strict"; 
+"use strict";
 
 document.addEventListener("DOMContentLoaded", function () {
   const feldList = document.getElementsByClassName("feld");
   const player1 = document.querySelector(".player1");
   const player2 = document.querySelector(".player2");
+  const bot_button = document.querySelector(".bot_button");
+  const player_button = document.querySelector(".player_button");
   let counter = 0;
+  let isBotTurn = true;
 
   const winCombinations = [
     [0, 1, 2], // Horizontal oben
@@ -27,35 +30,74 @@ document.addEventListener("DOMContentLoaded", function () {
     );
   };
 
-  // Schleife um alle Felder anzusteuern
-  for (let i = 0; i < feldList.length; i++) {
-    feldList[i].addEventListener("click", () => {
-      // Überprüfen, ob das Element bereits ein Kind (Icon) hat
-      if (feldList[i].querySelector("i") === null) {
-        const element = document.createElement("i");
-        if (counter % 2 === 0) {
-          element.className = "bx bx-radio-circle";
-          player1.classList.remove("player1");
-          player1.classList.add("player2");
-          player2.classList.add("player1");
-          playerMoves.comboplayer1.push(i);
-          checkWinAndAlert("comboplayer1", "Spieler 1");
-        } else {
+  bot_button.addEventListener("click", () => {
+    // Hier wird das Spiel gegen den Bot gestartet
+    bot_button.classList.add("clicked");
+    TicTacToeagainstBot();
+  });
+
+  function botPlay() {
+    // Zufälliger Zug des Bots nach einer Verzögerung von 2 Sekunden
+    setTimeout(function () {
+      // Überprüfen, ob das Spiel bereits gewonnen wurde
+      if (!checkWin(playerMoves, "comboplayer2")) {
+        const emptyCells = Array.from(feldList).filter(
+          (cell) => !cell.querySelector("i")
+        );
+        const randomCell =
+          emptyCells[Math.floor(Math.random() * emptyCells.length)];
+        const randomIndex = Array.from(feldList).indexOf(randomCell);
+        if (randomIndex !== -1) {
+          const element = document.createElement("i");
           element.className = "bx bx-cross";
-          player2.classList.remove("player1");
-          player2.classList.add("player2");
-          player1.classList.add("player1");
-          playerMoves.comboplayer2.push(i);
+          randomCell.appendChild(element);
+          playerMoves.comboplayer2.push(randomIndex);
           checkWinAndAlert("comboplayer2", "Spieler 2");
+          counter++;
+          // Ruf botPlay erneut auf, um den nächsten Botzug zu starten
         }
-        feldList[i].appendChild(element);
-        counter++;
-        //console.log(feldList[i]);
-        console.log(playerMoves.comboplayer1);
       }
-    });
+    }, 2000); // Zeitverzögerung von 2 Sekunden
   }
 
+  player_button.addEventListener("click", () => {
+    // Hier wird das Spiel gegen einen menschlichen Spieler gestartet
+    TicTacToe();
+    player_button.classList.add("clicked");
+  });
+
+  // Schleife um alle Felder anzusteuern
+  async function TicTacToe() {
+    for (let i = 0; i < feldList.length; i++) {
+      feldList[i].addEventListener("click", () => {
+        // Überprüfen, ob das Element bereits ein Kind (Icon) hat
+        if (feldList[i].querySelector("i") === null) {
+          const element = document.createElement("i");
+          if (counter % 2 === 0) {
+            element.className = "bx bx-radio-circle";
+            player1.classList.remove("player1");
+            player1.classList.add("player2");
+            player2.classList.add("player1");
+            playerMoves.comboplayer1.push(i);
+            checkWinAndAlert("comboplayer1", "Spieler 1");
+            // Nach jedem Zug des Spielers, führe den Zug des Bots aus
+            botPlay(); // Aufruf der Bot-Funktion
+          } else {
+            element.className = "bx bx-cross";
+            player2.classList.remove("player1");
+            player2.classList.add("player2");
+            player1.classList.add("player1");
+            playerMoves.comboplayer2.push(i);
+            checkWinAndAlert("comboplayer2", "Spieler 2");
+          }
+          feldList[i].appendChild(element);
+          counter++;
+          //console.log(feldList[i]);
+          console.log(playerMoves.comboplayer1);
+        }
+      });
+    }
+  }
   function checkWinAndAlert(currentPlayerKey, playerName) {
     // Spieler prüfen
     const playerWins = checkWin(playerMoves, currentPlayerKey);
@@ -66,12 +108,35 @@ document.addEventListener("DOMContentLoaded", function () {
       console.log(`${playerName} hat noch nicht gewonnen.`);
     }
   }
-
-  function randomnumber() {
-    setTimeout(function() {
-      let zufallszahl = Math.floor(Math.random() * 9) + 1;
-      console.log("Zufällige Zahl nach 2 Sekunden Verzögerung: " + zufallszahl);
-    }, 2000); // 2000 Millisekunden entsprechen 2 Sekunden
+  async function TicTacToeagainstBot() {
+    for (let i = 0; i < feldList.length; i++) {
+      feldList[i].addEventListener("click", () => {
+        // Überprüfen, ob das Element bereits ein Kind (Icon) hat
+        if (feldList[i].querySelector("i") === null) {
+          const element = document.createElement("i");
+          if (counter % 2 === 0) {
+            element.className = "bx bx-radio-circle";
+            player1.classList.remove("player1");
+            player1.classList.add("player2");
+            player2.classList.add("player1");
+            playerMoves.comboplayer1.push(i);
+            checkWinAndAlert("comboplayer1", "Spieler 1");
+            // Nach jedem Zug des Spielers, führe den Zug des Bots aus
+            botPlay(); // Aufruf der Bot-Funktion
+          } else {
+            element.className = "bx bx-cross";
+            player2.classList.remove("player1");
+            player2.classList.add("player2");
+            player1.classList.add("player1");
+            playerMoves.comboplayer2.push(i);
+            checkWinAndAlert("comboplayer2", "Spieler 2");
+          }
+          feldList[i].appendChild(element);
+          counter++;
+          //console.log(feldList[i]);
+          console.log(playerMoves.comboplayer1);
+        }
+      });
+    }
   }
-  
 });
