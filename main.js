@@ -6,8 +6,10 @@ document.addEventListener("DOMContentLoaded", function () {
   const player2 = document.querySelector(".player2");
   const bot_button = document.querySelector(".bot_button");
   const player_button = document.querySelector(".player_button");
-  let counter = 0;
-  let isBotTurn = true;
+  const turn_button1 = document.querySelector(".turn_button1");
+  const turn_button2 = document.querySelector(".turn_button2");
+
+  let counter;
 
   const winCombinations = [
     [0, 1, 2], // Horizontal oben
@@ -19,6 +21,7 @@ document.addEventListener("DOMContentLoaded", function () {
     [0, 4, 8], // Diagonal links oben nach rechts unten
     [2, 4, 6], // Diagonal rechts oben nach links unten
   ];
+
   const playerMoves = {
     comboplayer1: [],
     comboplayer2: [],
@@ -30,9 +33,30 @@ document.addEventListener("DOMContentLoaded", function () {
     );
   };
 
+  function checkWinAndAlert(currentPlayerKey, playerName) {
+    // Spieler prüfen
+    const playerWins = checkWin(playerMoves, currentPlayerKey);
+    if (playerWins) {
+      alert(`${playerName} hat gewonnen!`);
+      window.location.reload();
+      // Optional: Hier könnte man das Spiel zurücksetzen oder weitere Aktionen durchführen.
+    } else {
+      console.log(`${playerName} hat noch nicht gewonnen.`);
+    }
+  }
+
   bot_button.addEventListener("click", () => {
     // Hier wird das Spiel gegen den Bot gestartet
     bot_button.classList.add("clicked");
+    turn_button1.addEventListener("click", () => {
+      turn_button1.classList.add("clicked");
+      counter = 0;
+    });
+    turn_button2.addEventListener("click", () => {
+      turn_button2.classList.add("clicked");
+      counter = 1;
+      botPlay();
+    });
     TicTacToeagainstBot();
   });
 
@@ -40,75 +64,86 @@ document.addEventListener("DOMContentLoaded", function () {
     // Zufälliger Zug des Bots nach einer Verzögerung von 2 Sekunden
     setTimeout(function () {
       // Überprüfen, ob das Spiel bereits gewonnen wurde
-      if (!checkWin(playerMoves, "comboplayer2")) {
+      if (
+        !checkWin(playerMoves, "comboplayer2") ||
+        !checkWin(playerMoves, "comboplayer1")
+      ) {
         const emptyCells = Array.from(feldList).filter(
           (cell) => !cell.querySelector("i")
         );
         const randomCell =
           emptyCells[Math.floor(Math.random() * emptyCells.length)];
         const randomIndex = Array.from(feldList).indexOf(randomCell);
-        if (randomIndex !== -1) {
+        if (counter % 2 === 0) {
+          const element = document.createElement("i");
+          element.className = "bx bx-radio-circle";
+          randomCell.appendChild(element);
+          player1.classList.remove("player1");
+          player1.classList.add("player2");
+          player2.classList.add("player1");
+          playerMoves.comboplayer1.push(randomIndex);
+        } else {
           const element = document.createElement("i");
           element.className = "bx bx-cross";
           randomCell.appendChild(element);
+          player2.classList.remove("player1");
+          player2.classList.add("player2");
+          player1.classList.add("player1");
           playerMoves.comboplayer2.push(randomIndex);
-          checkWinAndAlert("comboplayer2", "Spieler 2");
-          counter++;
-          // Ruf botPlay erneut auf, um den nächsten Botzug zu starten
         }
+        if (counter === 1) {
+          player1.classList.remove("player1");
+          player1.classList.add("player2");
+          player2.classList.add("player1");
+        }
+        counter++;
+        
+        checkWinAndAlert("comboplayer1", "Spieler 1");
+        checkWinAndAlert("comboplayer2", "Spieler 2");
       }
     }, 2000); // Zeitverzögerung von 2 Sekunden
   }
 
   player_button.addEventListener("click", () => {
     // Hier wird das Spiel gegen einen menschlichen Spieler gestartet
+    counter = 0;
     TicTacToe();
     player_button.classList.add("clicked");
+    console.log(counter);
   });
 
   // Schleife um alle Felder anzusteuern
-  async function TicTacToe() {
+  function TicTacToe() {
     for (let i = 0; i < feldList.length; i++) {
       feldList[i].addEventListener("click", () => {
         // Überprüfen, ob das Element bereits ein Kind (Icon) hat
         if (feldList[i].querySelector("i") === null) {
           const element = document.createElement("i");
           if (counter % 2 === 0) {
-            element.className = "bx bx-radio-circle";
+            element.className = "bx bx-cross";
             player1.classList.remove("player1");
             player1.classList.add("player2");
             player2.classList.add("player1");
             playerMoves.comboplayer1.push(i);
-            checkWinAndAlert("comboplayer1", "Spieler 1");
-            // Nach jedem Zug des Spielers, führe den Zug des Bots aus
-            botPlay(); // Aufruf der Bot-Funktion
+            console.log(playerMoves.comboplayer1);
           } else {
-            element.className = "bx bx-cross";
+            element.className = "bx bx-radio-circle";
             player2.classList.remove("player1");
             player2.classList.add("player2");
             player1.classList.add("player1");
             playerMoves.comboplayer2.push(i);
-            checkWinAndAlert("comboplayer2", "Spieler 2");
+            console.log(playerMoves.comboplayer2);
           }
           feldList[i].appendChild(element);
           counter++;
-          //console.log(feldList[i]);
-          console.log(playerMoves.comboplayer1);
+          checkWinAndAlert("comboplayer1", "Spieler 1");
+          checkWinAndAlert("comboplayer2", "Spieler 2");
         }
       });
     }
   }
-  function checkWinAndAlert(currentPlayerKey, playerName) {
-    // Spieler prüfen
-    const playerWins = checkWin(playerMoves, currentPlayerKey);
-    if (playerWins) {
-      alert(`${playerName} hat gewonnen!`);
-      // Optional: Hier könntest du das Spiel zurücksetzen oder weitere Aktionen durchführen.
-    } else {
-      console.log(`${playerName} hat noch nicht gewonnen.`);
-    }
-  }
-  async function TicTacToeagainstBot() {
+
+  function TicTacToeagainstBot() {
     for (let i = 0; i < feldList.length; i++) {
       feldList[i].addEventListener("click", () => {
         // Überprüfen, ob das Element bereits ein Kind (Icon) hat
@@ -120,21 +155,20 @@ document.addEventListener("DOMContentLoaded", function () {
             player1.classList.add("player2");
             player2.classList.add("player1");
             playerMoves.comboplayer1.push(i);
-            checkWinAndAlert("comboplayer1", "Spieler 1");
             // Nach jedem Zug des Spielers, führe den Zug des Bots aus
-            botPlay(); // Aufruf der Bot-Funktion
+            botPlay();
           } else {
             element.className = "bx bx-cross";
             player2.classList.remove("player1");
             player2.classList.add("player2");
             player1.classList.add("player1");
             playerMoves.comboplayer2.push(i);
-            checkWinAndAlert("comboplayer2", "Spieler 2");
           }
           feldList[i].appendChild(element);
           counter++;
-          //console.log(feldList[i]);
-          console.log(playerMoves.comboplayer1);
+          console.log(counter);
+          checkWinAndAlert("comboplayer1", "Spieler 1");
+          checkWinAndAlert("comboplayer2", "Spieler 2");
         }
       });
     }

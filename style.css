@@ -10,7 +10,7 @@ button {
 }
 
 button:hover {
-  cursor:pointer;
+  cursor: pointer;
 }
 
 .background {
@@ -28,7 +28,6 @@ button:hover {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(3, 1fr);
-  
 }
 
 #spielfeld:hover {
@@ -45,46 +44,56 @@ button:hover {
   justify-content: center;
 }
 
-.bx{
+.bx {
   color: rgb(0, 0, 0);
   font-size: 90px;
 }
 
-.player1{
-  display:flex;
+.player1 {
+  display: flex;
   justify-content: center;
-  height:20px;
+  height: 20px;
   border-radius: 2px;
   background-color: blueviolet;
   color: #ffffff;
   border: 3.5px solid rgb(59, 58, 58);
-  width:48%;
+  width: 48%;
 }
 
-.player2{
+.player2 {
   display: flex;
   justify-content: center;
-  height:20px;
+  height: 20px;
   color: #ffffff;
-  width:48%;
+  width: 48%;
 }
 
-.bot_button{
+.bot_button {
   color: white;
   width: 50%;
 }
 
-.player_button{
-  color:white;
+.player_button {
+  color: white;
+  width: 50%;
+}
+
+.turn_button1 {
+  color: white;
+  width: 50%;
+}
+
+.turn_button2 {
+  color: white;
   width:50%;
 }
 
-.player{
+.player {
   display: flex;
   flex-wrap: wrap;
-  width:310px;
+  width: 310px;
 }
 
-.clicked{
+.clicked {
   background-color: aqua;
 }
