@@ -97,3 +97,7 @@ button:hover {
 .clicked {
   background-color: aqua;
 }
+
+.disabled{
+  pointer-events: none;
+}

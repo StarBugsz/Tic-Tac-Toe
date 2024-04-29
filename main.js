@@ -1,6 +1,7 @@
 "use strict";
 
 document.addEventListener("DOMContentLoaded", function () {
+  const game_board= document.getElementById("spielfeld");
   const feldList = document.getElementsByClassName("feld");
   const player1 = document.querySelector(".player1");
   const player2 = document.querySelector(".player2");
@@ -48,12 +49,15 @@ document.addEventListener("DOMContentLoaded", function () {
   bot_button.addEventListener("click", () => {
     // Hier wird das Spiel gegen den Bot gestartet
     bot_button.classList.add("clicked");
+    player_button.disabled = true;
     turn_button1.addEventListener("click", () => {
+      turn_button2.disabled = true;
       turn_button1.classList.add("clicked");
       counter = 0;
     });
     turn_button2.addEventListener("click", () => {
       turn_button2.classList.add("clicked");
+      turn_button1.disabled = true;
       counter = 1;
       botPlay();
     });
@@ -61,6 +65,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   function botPlay() {
+    game_board.classList.add("disabled");
     // Zufälliger Zug des Bots nach einer Verzögerung von 2 Sekunden
     setTimeout(function () {
       // Überprüfen, ob das Spiel bereits gewonnen wurde
@@ -86,20 +91,23 @@ document.addEventListener("DOMContentLoaded", function () {
           const element = document.createElement("i");
           element.className = "bx bx-cross";
           randomCell.appendChild(element);
-          player2.classList.remove("player1");
-          player2.classList.add("player2");
-          player1.classList.add("player1");
+          if (player1.classList.contains("player1")) {
+            player1.classList.remove("player1");
+            player1.classList.add("player2");
+            player2.classList.add("player1");
+          } else {
+            player2.classList.remove("player1");
+            player2.classList.add("player2");
+            player1.classList.add("player1");
+          }
           playerMoves.comboplayer2.push(randomIndex);
         }
-        if (counter === 1) {
-          player1.classList.remove("player1");
-          player1.classList.add("player2");
-          player2.classList.add("player1");
-        }
+
         counter++;
-        
+
         checkWinAndAlert("comboplayer1", "Spieler 1");
         checkWinAndAlert("comboplayer2", "Spieler 2");
+        game_board.classList.remove("disabled");
       }
     }, 2000); // Zeitverzögerung von 2 Sekunden
   }
@@ -107,9 +115,9 @@ document.addEventListener("DOMContentLoaded", function () {
   player_button.addEventListener("click", () => {
     // Hier wird das Spiel gegen einen menschlichen Spieler gestartet
     counter = 0;
+    bot_button.disabled = true;
     TicTacToe();
     player_button.classList.add("clicked");
-    console.log(counter);
   });
 
   // Schleife um alle Felder anzusteuern
@@ -132,7 +140,6 @@ document.addEventListener("DOMContentLoaded", function () {
             player2.classList.add("player2");
             player1.classList.add("player1");
             playerMoves.comboplayer2.push(i);
-            console.log(playerMoves.comboplayer2);
           }
           feldList[i].appendChild(element);
           counter++;
@@ -155,7 +162,6 @@ document.addEventListener("DOMContentLoaded", function () {
             player1.classList.add("player2");
             player2.classList.add("player1");
             playerMoves.comboplayer1.push(i);
-            // Nach jedem Zug des Spielers, führe den Zug des Bots aus
             botPlay();
           } else {
             element.className = "bx bx-cross";
@@ -166,7 +172,6 @@ document.addEventListener("DOMContentLoaded", function () {
           }
           feldList[i].appendChild(element);
           counter++;
-          console.log(counter);
           checkWinAndAlert("comboplayer1", "Spieler 1");
           checkWinAndAlert("comboplayer2", "Spieler 2");
         }
